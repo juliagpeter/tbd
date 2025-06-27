@@ -37,6 +37,34 @@ body {
   color: #6c757d;
 }
 
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #495057;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.nav-link.active {
+  background-color: #007bff;
+  color: white;
+}
+
 .table-container {
   overflow-x: auto;
 }
@@ -115,6 +143,31 @@ tr:hover {
 .tech-c {
   background: #e2e3e5;
   color: #383d41;
+}
+
+.tech-java {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.tech-python {
+  background: #d4edda;
+  color: #155724;
+}
+
+.tech-bdd {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.tech-tdd {
+  background: #ffeaa7;
+  color: #856404;
+}
+
+.tech-api {
+  background: #d1ecf1;
+  color: #0c5460;
 }
 
 /* Participação */

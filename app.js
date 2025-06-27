@@ -16,13 +16,21 @@ const COLL_NAME = 'termosti';
 
 let db, collection;
 
-const tecnologiasNoTi = [
+const tecnologiasNoTSI = [
     'javascript',
     'php',
     'sql',
     'typescript',
     'nosql',
-    'c'
+    'c',
+    'java'
+];
+
+const tecnologiasForaDoTSI = [
+    'python',
+    'bdd',
+    'tdd',
+    'api'
 ];
 
 // carregar o template html
@@ -55,7 +63,7 @@ app.get('/', async (req, res) => {
       </tr>
     `).join('\n');
 
-        const template = loadTemplate('listagem.html');
+        const template = loadTemplate('index.html');
         const html = template.replace('{{{ rows }}}', rows);
 
         res.send(html);
@@ -69,7 +77,7 @@ app.get('/desempenho', async (req, res) => {
     try {
         // filtra as tecnologias da const
         const query = {
-            Termo: { $in: tecnologiasNoTi }
+            Termo: { $in: tecnologiasNoTSI }
         };
 
         const docs = await collection.find(query).sort({
@@ -95,6 +103,62 @@ app.get('/desempenho', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Erro ao buscar dados de desempenho.');
+    }
+});
+
+app.get('/fora-do-tsi', async (req, res) => {
+    try {
+        // filtra pela const
+        const query = {
+            Termo: { $in: tecnologiasForaDoTSI }
+        };
+
+        const docs = await collection.find(query).toArray();
+
+        const dadosJaneiro = docs.filter(d => {
+            const mensuracao = d.Mensuracao.toString();
+            // ve se é 01 ou se começa com jan 
+            return mensuracao.includes('01/') || mensuracao.toLowerCase().includes('jan');
+        });
+
+        // agrupa  por ano e tecnologia
+        const dadosAgrupados = {};
+        dadosJaneiro.forEach(d => {
+            const ano = d.Mensuracao.toString().match(/(\d{4})/)?.[1] || 'N/A';
+            const key = `${d.Termo}-${ano}`;
+
+            if (!dadosAgrupados[key]) {
+                dadosAgrupados[key] = {
+                    termo: d.Termo,
+                    ano: ano,
+                    participacao: d.Participacao
+                };
+            }
+        });
+
+        const dadosOrdenados = Object.values(dadosAgrupados).sort((a, b) => {
+            if (a.ano !== b.ano) return a.ano.localeCompare(b.ano);
+            return a.termo.localeCompare(b.termo);
+        });
+
+        const rows = dadosOrdenados.map(d => {
+            const techClass = d.termo.toLowerCase().replace(/\s+/g, '-');
+            return `
+      <tr>
+        <td><span class="tech-badge tech-${techClass}">${d.termo}</span></td>
+        <td class="date-cell">${d.ano}</td>
+        <td><span class="participation">${d.participacao}</span></td>
+      </tr>
+    `;
+        }).join('\n');
+
+        const template = loadTemplate('fora-do-tsi.html');
+        const html = template.replace('{{{ rows }}}', rows);
+
+        res.send(html);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao buscar dados de tecnologias fora do curso.');
     }
 });
 
