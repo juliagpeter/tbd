@@ -182,6 +182,23 @@ tr:hover {
   font-size: 0.85rem;
 }
 
+/* Estilos para comparativo de tecnologias */
+.tech-principal {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  font-weight: 600;
+}
+
+.tech-concorrente {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+
+.status {
+  font-weight: 500;
+  text-align: center;
+}
+
 /* responsividade */
 @media (max-width: 768px) {
   body {

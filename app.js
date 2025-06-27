@@ -33,6 +33,22 @@ const tecnologiasForaDoTSI = [
     'api'
 ];
 
+// Grupos de tecnologias concorrentes
+const gruposTecnologias = {
+    'Frontend': {
+        principal: 'python',
+        concorrentes: ['typescript', 'javascript']
+    },
+    'Backend': {
+        principal: 'python',
+        concorrentes: ['java', 'php']
+    },
+    'Banco de Dados': {
+        principal: 'mysql',
+        concorrentes: ['postgresql', 'mongodb']
+    }
+};
+
 // carregar o template html
 function loadTemplate(name) {
     return fs.readFileSync(path.join(__dirname, 'views', name), 'utf8');
@@ -159,6 +175,88 @@ app.get('/fora-do-tsi', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Erro ao buscar dados de tecnologias fora do curso.');
+    }
+});
+
+app.get('/comparativo-tecnologias', async (req, res) => {
+    try {
+        // Buscar todos os dados das tecnologias que vamos comparar
+        const todasTecnologias = [];
+        Object.values(gruposTecnologias).forEach(grupo => {
+            todasTecnologias.push(grupo.principal, ...grupo.concorrentes);
+        });
+
+        const query = {
+            Termo: { $in: todasTecnologias }
+        };
+
+        const docs = await collection.find(query).toArray();
+
+        // Agrupar dados por tecnologia e ano
+        const dadosPorTecnologia = {};
+        docs.forEach(d => {
+            const ano = d.Mensuracao.toString().match(/(\d{4})/)?.[1] || 'N/A';
+            const tech = d.Termo.toLowerCase();
+
+            if (!dadosPorTecnologia[tech]) {
+                dadosPorTecnologia[tech] = {};
+            }
+
+            if (!dadosPorTecnologia[tech][ano]) {
+                dadosPorTecnologia[tech][ano] = [];
+            }
+
+            dadosPorTecnologia[tech][ano].push(parseFloat(d.Participacao) || 0);
+        });
+
+        // Calcular médias anuais
+        const mediasPorTecnologia = {};
+        Object.keys(dadosPorTecnologia).forEach(tech => {
+            mediasPorTecnologia[tech] = {};
+            Object.keys(dadosPorTecnologia[tech]).forEach(ano => {
+                const valores = dadosPorTecnologia[tech][ano];
+                const media = valores.reduce((a, b) => a + b, 0) / valores.length;
+                mediasPorTecnologia[tech][ano] = media.toFixed(2);
+            });
+        });
+
+        // Gerar rows para a tabela
+        const rows = [];
+        Object.entries(gruposTecnologias).forEach(([categoria, grupo]) => {
+            const tecnologias = [grupo.principal, ...grupo.concorrentes];
+
+            tecnologias.forEach(tech => {
+                const techLower = tech.toLowerCase();
+                const techClass = techLower.replace(/\s+/g, '-');
+
+                if (mediasPorTecnologia[techLower]) {
+                    // Calcular média geral
+                    const mediaGeral = Object.values(mediasPorTecnologia[techLower])
+                        .reduce((a, b) => parseFloat(a) + parseFloat(b), 0) /
+                        Object.values(mediasPorTecnologia[techLower]).length;
+
+                    const isPrincipal = tech === grupo.principal;
+                    const badgeClass = isPrincipal ? 'tech-principal' : 'tech-concorrente';
+
+                    rows.push(`
+                        <tr>
+                            <td>${categoria}</td>
+                            <td><span class="tech-badge tech-${techClass} ${badgeClass}">${tech}</span></td>
+                            <td class="participation">${mediaGeral.toFixed(2)}%</td>
+                            <td class="status">${isPrincipal ? 'Principal' : 'Concorrente'}</td>
+                        </tr>
+                    `);
+                }
+            });
+        });
+
+        const template = loadTemplate('comparativo-tecnologias.html');
+        const html = template.replace('{{{ rows }}}', rows.join('\n'));
+
+        res.send(html);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao buscar dados do comparativo.');
     }
 });
 
