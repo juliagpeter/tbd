@@ -463,6 +463,174 @@ tr:hover {
   color: #5a4fcf;
 }
 
+/* Estilos para análise por categorias */
+.criterio-categorizacao {
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.criterio-categorizacao h3 {
+  color: #495057;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.criterio-categorizacao p {
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.criterio-categorizacao ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.criterio-categorizacao li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.criterio-categorizacao li:last-child {
+  border-bottom: none;
+}
+
+.resumo-categorias {
+  padding: 24px;
+  background-color: #fff;
+}
+
+.resumo-categorias h3 {
+  color: #495057;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.categoria-card {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.categoria-card h4 {
+  color: #495057;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.categoria-stats {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.categoria-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  background-color: #007bff;
+  color: white;
+}
+
+.metodologia {
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.metodologia h3 {
+  color: #495057;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.metodologia p {
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Badges para categorias */
+.categoria-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.categoria-linguagens-de-programação {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.categoria-frameworks-e-bibliotecas {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.categoria-bancos-de-dados {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.categoria-cloud-e-devops {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.categoria-metodologias-e-práticas {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.categoria-sistemas-operacionais {
+  background: #e0f2f1;
+  color: #00695c;
+}
+
+.categoria-tecnologias-web {
+  background: #f9fbe7;
+  color: #689f38;
+}
+
+.categoria-mobile {
+  background: #e1f5fe;
+  color: #0277bd;
+}
+
+.categoria-inteligência-artificial {
+  background: #f3e5f5;
+  color: #512da8;
+}
+
+.categoria-outros {
+  background: #f5f5f5;
+  color: #616161;
+}
+
 /* responsividade */
 @media (max-width: 768px) {
   body {
@@ -523,5 +691,141 @@ tr:hover {
   .tech-lists {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  /* Estilos para página de categorias */
+  .criterio-categorizacao {
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+  }
+
+  .criterio-categorizacao ul {
+    margin: 15px 0;
+    padding-left: 20px;
+  }
+
+  .criterio-categorizacao li {
+    margin: 8px 0;
+    line-height: 1.5;
+  }
+
+  .resumo-categorias {
+    margin: 20px 0;
+  }
+
+  .categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+  }
+
+  .categoria-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .categoria-card h4 {
+    margin: 0 0 12px 0;
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .categoria-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+  }
+
+  .stat-number {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #007bff;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+
+  /* Badges de categoria */
+  .categoria-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+  }
+
+  .categoria-linguagens-de-programação {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .categoria-frameworks-e-bibliotecas {
+    background: #cce5ff;
+    color: #004085;
+  }
+
+  .categoria-bancos-de-dados {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .categoria-cloud-e-devops {
+    background: #e7e3ff;
+    color: #5a4fcf;
+  }
+
+  .categoria-tecnologias-web {
+    background: #d1ecf1;
+    color: #0c5460;
+  }
+
+  .categoria-mobile {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .categoria-metodologias-e-práticas {
+    background: #e2e3e5;
+    color: #383d41;
+  }
+
+  .categoria-sistemas-operacionais {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .categoria-inteligência-artificial {
+    background: #ffeaa7;
+    color: #856404;
+  }
+
+  .categoria-outros {
+    background: #f8f9fa;
+    color: #495057;
+  }
+
+  .metodologia {
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+  }
+
+  .metodologia h3 {
+    margin-top: 0;
+    color: #495057;
   }
 }

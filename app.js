@@ -611,6 +611,253 @@ app.get('/bancos-desempenho', async (req, res) => {
     }
 });
 
+app.get('/categorias-analise', async (req, res) => {
+    try {
+        // 1. Buscar os 80 termos mais presentes (por frequência de aparição)
+        const termosFrequentes = await collection.aggregate([
+            {
+                $group: {
+                    _id: "$Termo",
+                    count: { $sum: 1 },
+                    participacaoMedia: { $avg: { $toDouble: "$Participacao" } }
+                }
+            },
+            { $sort: { count: -1 } },
+            { $limit: 80 }
+        ]).toArray();
+
+        // 2. Categorização manual dos termos mais frequentes
+        const categorizacao = {
+            'javascript': 'Linguagens de Programação',
+            'java': 'Linguagens de Programação',
+            'python': 'Linguagens de Programação',
+            'c': 'Linguagens de Programação',
+            'php': 'Linguagens de Programação',
+            'typescript': 'Linguagens de Programação',
+            'c#': 'Linguagens de Programação',
+            'ruby': 'Linguagens de Programação',
+            'go': 'Linguagens de Programação',
+            'rust': 'Linguagens de Programação',
+            'kotlin': 'Linguagens de Programação',
+            'swift': 'Linguagens de Programação',
+
+            'react': 'Frameworks e Bibliotecas',
+            'angular': 'Frameworks e Bibliotecas',
+            'vue': 'Frameworks e Bibliotecas',
+            'node.js': 'Frameworks e Bibliotecas',
+            'spring': 'Frameworks e Bibliotecas',
+            'django': 'Frameworks e Bibliotecas',
+            'flask': 'Frameworks e Bibliotecas',
+            'express': 'Frameworks e Bibliotecas',
+            'jquery': 'Frameworks e Bibliotecas',
+            'bootstrap': 'Frameworks e Bibliotecas',
+
+            'mysql': 'Bancos de Dados',
+            'postgresql': 'Bancos de Dados',
+            'mongodb': 'Bancos de Dados',
+            'redis': 'Bancos de Dados',
+            'sqlite': 'Bancos de Dados',
+            'oracle': 'Bancos de Dados',
+            'sql': 'Bancos de Dados',
+            'nosql': 'Bancos de Dados',
+
+            'aws': 'Cloud e DevOps',
+            'azure': 'Cloud e DevOps',
+            'docker': 'Cloud e DevOps',
+            'kubernetes': 'Cloud e DevOps',
+            'jenkins': 'Cloud e DevOps',
+            'git': 'Cloud e DevOps',
+            'github': 'Cloud e DevOps',
+            'gitlab': 'Cloud e DevOps',
+
+            'html': 'Tecnologias Web',
+            'css': 'Tecnologias Web',
+            'rest': 'Tecnologias Web',
+            'api': 'Tecnologias Web',
+            'json': 'Tecnologias Web',
+            'xml': 'Tecnologias Web',
+            'graphql': 'Tecnologias Web',
+
+            'android': 'Mobile',
+            'ios': 'Mobile',
+            'react native': 'Mobile',
+            'flutter': 'Mobile',
+
+            'agile': 'Metodologias e Práticas',
+            'scrum': 'Metodologias e Práticas',
+            'tdd': 'Metodologias e Práticas',
+            'bdd': 'Metodologias e Práticas',
+            'devops': 'Metodologias e Práticas',
+
+            'linux': 'Sistemas Operacionais',
+            'windows': 'Sistemas Operacionais',
+            'ubuntu': 'Sistemas Operacionais',
+            'macos': 'Sistemas Operacionais',
+
+            'machine learning': 'Inteligência Artificial',
+            'ai': 'Inteligência Artificial',
+            'tensorflow': 'Inteligência Artificial'
+        };
+
+        // 3. Aplicar categorização e buscar dados completos
+        const termosCategorizados = termosFrequentes.map(termo => ({
+            termo: termo._id,
+            categoria: categorizacao[termo._id.toLowerCase()] || 'Outros',
+            frequencia: termo.count
+        }));
+
+        // 4. Buscar todos os dados dos termos categorizados
+        const termosLista = termosCategorizados.map(t => t.termo);
+        const dadosCompletos = await collection.find({
+            Termo: { $in: termosLista }
+        }).toArray();
+
+        // 5. Agrupar dados por categoria e ano
+        const dadosPorCategoriaAno = {};
+
+        dadosCompletos.forEach(doc => {
+            const termo = termosCategorizados.find(t => t.termo === doc.Termo);
+            if (!termo) return;
+
+            const categoria = termo.categoria;
+            const ano = doc.Mensuracao.toString().match(/(\d{4})/)?.[1] || 'N/A';
+            const participacao = parseFloat(doc.Participacao) || 0;
+
+            const key = `${categoria}-${ano}`;
+            if (!dadosPorCategoriaAno[key]) {
+                dadosPorCategoriaAno[key] = {
+                    categoria,
+                    ano,
+                    participacoes: [],
+                    termos: new Set()
+                };
+            }
+
+            dadosPorCategoriaAno[key].participacoes.push(participacao);
+            dadosPorCategoriaAno[key].termos.add(doc.Termo);
+        });
+
+        // 6. Calcular médias por categoria e ano
+        const resultadosAgregados = Object.values(dadosPorCategoriaAno).map(dados => ({
+            categoria: dados.categoria,
+            ano: dados.ano,
+            participacaoMedia: dados.participacoes.reduce((a, b) => a + b, 0) / dados.participacoes.length,
+            quantidadeTermos: dados.termos.size
+        })).sort((a, b) => {
+            if (a.categoria !== b.categoria) return a.categoria.localeCompare(b.categoria);
+            return a.ano.localeCompare(b.ano);
+        });
+
+        // 7. Gerar HTML da tabela
+        const rows = resultadosAgregados.map(dados => `
+            <tr>
+                <td><span class="categoria-badge categoria-${dados.categoria.toLowerCase().replace(/\s+/g, '-')}">${dados.categoria}</span></td>
+                <td class="date-cell">${dados.ano}</td>
+                <td><span class="participation">${dados.participacaoMedia.toFixed(2)}%</span></td>
+                <td>${dados.quantidadeTermos}</td>
+            </tr>
+        `).join('\n');
+
+        // 8. Gerar resumo por categoria
+        const resumoPorCategoria = {};
+        resultadosAgregados.forEach(dados => {
+            if (!resumoPorCategoria[dados.categoria]) {
+                resumoPorCategoria[dados.categoria] = {
+                    participacaoTotal: 0,
+                    termosTotal: 0,
+                    anos: 0
+                };
+            }
+            resumoPorCategoria[dados.categoria].participacaoTotal += dados.participacaoMedia;
+            resumoPorCategoria[dados.categoria].termosTotal += dados.quantidadeTermos;
+            resumoPorCategoria[dados.categoria].anos++;
+        });
+
+        const resumoCards = Object.entries(resumoPorCategoria).map(([categoria, dados]) => `
+            <div class="categoria-card">
+                <h4>${categoria}</h4>
+                <div class="categoria-stats">
+                    <span class="stat-number">${(dados.participacaoTotal / dados.anos).toFixed(1)}%</span>
+                    <span class="stat-label">Média Anual</span>
+                </div>
+                <div class="categoria-stats">
+                    <span class="stat-number">${Math.round(dados.termosTotal / dados.anos)}</span>
+                    <span class="stat-label">Termos por Ano</span>
+                </div>
+            </div>
+        `).join('\n');
+
+        const template = loadTemplate('categorias-analise.html');
+        const html = template
+            .replace('{{{ rows }}}', rows)
+            .replace('{{{ resumoCards }}}', resumoCards);
+
+        res.send(html);
+    } catch (err) {
+        console.error('Erro ao buscar dados de categorização:', err);
+        res.status(500).send('Erro ao buscar dados de categorização.');
+    }
+});
+
+// Rota de teste para verificar se o servidor está funcionando
+app.get('/teste', (req, res) => {
+    res.send('<h1>Servidor funcionando!</h1><p>Teste de conectividade OK</p>');
+});
+
+// Rota para criar coleção auxiliar (apenas para demonstração do exercício)
+app.get('/criar-colecao-auxiliar', async (req, res) => {
+    try {
+        // Esta rota demonstra como seria criada a coleção auxiliar
+        // Em um cenário real, isso seria feito uma única vez
+
+        // 1. Buscar os 80 termos mais presentes
+        const termosFrequentes = await collection.aggregate([
+            {
+                $group: {
+                    _id: "$Termo",
+                    count: { $sum: 1 },
+                    participacaoMedia: { $avg: { $toDouble: "$Participacao" } }
+                }
+            },
+            { $sort: { count: -1 } },
+            { $limit: 80 }
+        ]).toArray();
+
+        // 2. Categorização dos termos
+        const categorizacao = {
+            'javascript': 'Linguagens de Programação',
+            'java': 'Linguagens de Programação',
+            'python': 'Linguagens de Programação',
+            'c': 'Linguagens de Programação',
+            'php': 'Linguagens de Programação',
+            'typescript': 'Linguagens de Programação',
+            // ... (outros termos conforme definido anteriormente)
+        };
+
+        // 3. Criar documentos para a coleção auxiliar
+        const colecaoAuxiliar = termosFrequentes.map(termo => ({
+            termo: termo._id,
+            categoria: categorizacao[termo._id.toLowerCase()] || 'Outros',
+            frequencia: termo.count,
+            participacaoMedia: termo.participacaoMedia,
+            criadoEm: new Date()
+        }));
+
+        // 4. Inserir na coleção auxiliar (comentado para não duplicar dados)
+        // const auxiliarCollection = db.collection('termos_categorizados');
+        // await auxiliarCollection.insertMany(colecaoAuxiliar);
+
+        res.json({
+            message: `Coleção auxiliar criada com ${colecaoAuxiliar.length} termos categorizados`,
+            preview: colecaoAuxiliar.slice(0, 10), // Mostra apenas os primeiros 10
+            categorias: [...new Set(colecaoAuxiliar.map(t => t.categoria))]
+        });
+    } catch (err) {
+        console.error('Erro ao criar coleção auxiliar:', err);
+        res.status(500).json({ error: 'Erro ao criar coleção auxiliar' });
+    }
+});
+
 start().catch(err => {
     console.error('Falha ao iniciar:', err);
 });

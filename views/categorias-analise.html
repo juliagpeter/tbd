@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Análise por Categorias</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Análise Categorizada de Tecnologias</h1>
+        <p>80 termos mais presentes na base de dados agrupados por categoria</p>
+      </div>
+
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/desempenho" class="nav-link">Tecnologias do TSI</a>
+        <a href="/fora-do-tsi" class="nav-link">Fora do TSI</a>
+        <a href="/comparativo-tecnologias" class="nav-link">Comparativo</a>
+        <a href="/ranking-frontend-backend" class="nav-link">Ranking</a>
+        <a href="/frontend-vs-backend" class="nav-link">Frontend vs Backend</a>
+        <a href="/bancos-desempenho" class="nav-link">Bancos de Dados</a>
+        <a href="/categorias-analise" class="nav-link active"
+          >Análise por Categorias</a
+        >
+      </div>
+
+      <div class="criterio-categorizacao">
+        <h3>Critério de Categorização</h3>
+        <p>
+          Os 80 termos mais presentes na base de dados foram categorizados
+          seguindo a estrutura tecnológica moderna de desenvolvimento de
+          software:
+        </p>
+        <ul>
+          <li>
+            <strong>Linguagens de Programação (20 termos):</strong> Linguagens
+            de alto e baixo nível utilizadas para desenvolvimento
+          </li>
+          <li>
+            <strong>Frameworks e Bibliotecas (15 termos):</strong> Ferramentas
+            que aceleram o desenvolvimento de aplicações
+          </li>
+          <li>
+            <strong>Bancos de Dados (10 termos):</strong> Sistemas de
+            gerenciamento de dados relacionais e não-relacionais
+          </li>
+          <li>
+            <strong>Cloud e DevOps (10 termos):</strong> Tecnologias de
+            computação em nuvem e automação de processos
+          </li>
+          <li>
+            <strong>Metodologias e Práticas (8 termos):</strong> Metodologias de
+            desenvolvimento e boas práticas
+          </li>
+          <li>
+            <strong>Sistemas Operacionais (5 termos):</strong> Plataformas de
+            execução de aplicações
+          </li>
+          <li>
+            <strong>Tecnologias Web (7 termos):</strong> Tecnologias específicas
+            para desenvolvimento web
+          </li>
+          <li>
+            <strong>Mobile (3 termos):</strong> Plataformas e tecnologias para
+            desenvolvimento móvel
+          </li>
+          <li>
+            <strong>Inteligência Artificial (2 termos):</strong> Tecnologias
+            emergentes de IA e ML
+          </li>
+          <li>
+            <strong>Outros:</strong> Termos que não se encaixam nas categorias
+            principais
+          </li>
+        </ul>
+      </div>
+
+      <div class="resumo-categorias">
+        <h3>Resumo por Categoria</h3>
+        <div class="categorias-grid">{{{ resumoCards }}}</div>
+      </div>
+
+      <div class="table-container">
+        <h3>Participação por Categoria ao Longo do Tempo</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Ano</th>
+              <th>Participação Média (%)</th>
+              <th>Quantidade de Termos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{{ rows }}}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="metodologia">
+        <h3>Metodologia</h3>
+        <p>
+          A análise foi realizada selecionando os 80 termos mais frequentes na
+          base de dados e agrupando-os em categorias baseadas na taxonomia
+          tecnológica atual. Para cada categoria e ano, foi calculada a
+          participação média dos termos pertencentes àquela categoria,
+          proporcionando uma visão agregada da evolução de cada segmento
+          tecnológico ao longo do tempo.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
