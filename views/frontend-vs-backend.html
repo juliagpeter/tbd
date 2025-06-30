@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend vs Backend - Comparativo Agregado</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Frontend vs Backend</h1>
+        <p>Comparativo agregado de participação de mercado ao longo do tempo</p>
+      </div>
+
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/desempenho" class="nav-link">Tecnologias do TSI</a>
+        <a href="/fora-do-tsi" class="nav-link">Fora do TSI</a>
+        <a href="/comparativo-tecnologias" class="nav-link">Comparativo</a>
+        <a href="/ranking-frontend-backend" class="nav-link">Ranking</a>
+        <a href="/frontend-vs-backend" class="nav-link active">Frontend vs Backend</a>
+      </div>
+
+      {{{ summary }}}
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Ano</th>
+              <th>Total Frontend</th>
+              <th>Total Backend</th>
+              <th>Total Geral</th>
+              <th>% Frontend</th>
+              <th>% Backend</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{{ rows }}}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insights">
+        <h3>Tecnologias Analisadas</h3>
+        <div class="tech-lists">
+          <div class="tech-list">
+            <h4>Frontend</h4>
+            <ul>
+              <li>JavaScript</li>
+              <li>TypeScript</li>
+              <li>Angular</li>
+              <li>HTML</li>
+              <li>CSS</li>
+            </ul>
+          </div>
+          <div class="tech-list">
+            <h4>Backend</h4>
+            <ul>
+              <li>Java</li>
+              <li>Python</li>
+              <li>PHP</li>
+              <li>Ruby</li>
+              <li>C#</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

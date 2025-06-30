@@ -3,39 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tecnologias Fora do Curso</title>
+    <title>Ranking Frontend vs Backend</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <h1>Tecnologias estudadas fora do TSI</h1>
-        <p>Python, BDD, TDD e API</p>
+        <h1>ranking frontend vs backend</h1>
+        <p>comparativo ordinal</p>
       </div>
 
       <div class="nav-links">
         <a href="/" class="nav-link">Home</a>
         <a href="/desempenho" class="nav-link">Tecnologias do TSI</a>
-        <a href="/fora-do-tsi" class="nav-link active">Fora do TSI</a>
+        <a href="/fora-do-tsi" class="nav-link">Fora do TSI</a>
         <a href="/comparativo-tecnologias" class="nav-link">Comparativo</a>
-        <a href="/ranking-frontend-backend" class="nav-link">Ranking</a>
+        <a href="/ranking-frontend-backend" class="nav-link active">Ranking</a>
         <a href="/frontend-vs-backend" class="nav-link">Frontend vs Backend</a>
       </div>
 
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Tecnologia</th>
-              <th>Ano</th>
-              <th>Participação</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{{ rows }}}
-          </tbody>
-        </table>
-      </div>
+      <div class="rankings-container">{{{ rankings }}}</div>
     </div>
   </body>
 </html>
