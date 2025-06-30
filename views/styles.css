@@ -393,6 +393,76 @@ tr:hover {
   font-size: 0.9rem;
 }
 
+/* Estilos para gráfico de bancos de dados */
+.chart-container {
+  padding: 24px;
+  margin: 20px 0;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container h3 {
+  margin-bottom: 20px;
+  color: #495057;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.chart-container canvas {
+  max-height: 400px;
+}
+
+.insight-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.insight-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.insight-card h4 {
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.insight-card p {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Estilos específicos para bancos de dados */
+.tech-mysql {
+  background: #e7f3ff;
+  color: #004085;
+}
+
+.tech-postgresql {
+  background: #e8f5e8;
+  color: #155724;
+}
+
+.tech-mongodb {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.tech-sqlite {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.tech-redis {
+  background: #e7e3ff;
+  color: #5a4fcf;
+}
+
 /* responsividade */
 @media (max-width: 768px) {
   body {

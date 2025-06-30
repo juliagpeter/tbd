@@ -53,6 +53,9 @@ const gruposTecnologias = {
 const tecnologiasFrontend = ['javascript', 'typescript', 'angular', 'html', 'css'];
 const tecnologiasBackend = ['java', 'python', 'php', 'ruby', 'c#'];
 
+// Lista de bancos de dados para comparação
+const bancosDesempenho = ['mysql', 'postgresql', 'mongodb', 'sqlite', 'redis'];
+
 // carregar o template html
 function loadTemplate(name) {
     return fs.readFileSync(path.join(__dirname, 'views', name), 'utf8');
@@ -515,6 +518,96 @@ app.get('/frontend-vs-backend', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Erro ao buscar dados do comparativo agregado.');
+    }
+});
+
+app.get('/bancos-desempenho', async (req, res) => {
+    try {
+        const query = {
+            Termo: { $in: bancosDesempenho }
+        };
+
+        const docs = await collection.find(query).sort({
+            Mensuracao: 1
+        }).toArray();
+
+        // Agrupar dados por banco e ano
+        const dadosPorBanco = {};
+        docs.forEach(d => {
+            const banco = d.Termo.toLowerCase();
+            const ano = d.Mensuracao.toString().match(/(\d{4})/)?.[1];
+            
+            if (ano) {
+                if (!dadosPorBanco[banco]) {
+                    dadosPorBanco[banco] = {};
+                }
+                
+                if (!dadosPorBanco[banco][ano]) {
+                    dadosPorBanco[banco][ano] = [];
+                }
+                
+                dadosPorBanco[banco][ano].push(parseFloat(d.Participacao) || 0);
+            }
+        });
+
+        // Calcular médias anuais
+        const mediasPorBanco = {};
+        Object.keys(dadosPorBanco).forEach(banco => {
+            mediasPorBanco[banco] = {};
+            Object.keys(dadosPorBanco[banco]).forEach(ano => {
+                const valores = dadosPorBanco[banco][ano];
+                mediasPorBanco[banco][ano] = valores.reduce((sum, val) => sum + val, 0) / valores.length;
+            });
+        });
+
+        // Preparar dados para o gráfico
+        const anos = [...new Set(docs.map(d => d.Mensuracao.toString().match(/(\d{4})/)?.[1]).filter(Boolean))].sort();
+        
+        const chartData = {
+            labels: anos,
+            datasets: bancosDesempenho.map((banco, index) => {
+                const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1'];
+                return {
+                    label: banco.toUpperCase(),
+                    data: anos.map(ano => mediasPorBanco[banco]?.[ano] || 0),
+                    borderColor: colors[index],
+                    backgroundColor: colors[index] + '20',
+                    tension: 0.4
+                };
+            })
+        };
+
+        // Gerar dados para a tabela
+        const rows = bancosDesempenho.map(banco => {
+            const dadosBanco = mediasPorBanco[banco] || {};
+            const mediasAnuais = anos.map(ano => dadosBanco[ano] || 0);
+            const mediaGeral = mediasAnuais.reduce((sum, val) => sum + val, 0) / mediasAnuais.length;
+            
+            const colunasBanco = anos.map(ano => 
+                `<td class="participation">${(dadosBanco[ano] || 0).toFixed(2)}%</td>`
+            ).join('');
+            
+            return `
+                <tr>
+                    <td><span class="tech-badge tech-${banco}">${banco.toUpperCase()}</span></td>
+                    ${colunasBanco}
+                    <td class="participation" style="font-weight: 600;">${mediaGeral.toFixed(2)}%</td>
+                </tr>
+            `;
+        }).join('');
+
+        const headerColunas = anos.map(ano => `<th>${ano}</th>`).join('');
+
+        const template = loadTemplate('bancos-desempenho.html');
+        const html = template
+            .replace('{{{ chartData }}}', JSON.stringify(chartData))
+            .replace('{{{ headerColunas }}}', headerColunas)
+            .replace('{{{ rows }}}', rows);
+
+        res.send(html);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro ao buscar dados de desempenho dos bancos.');
     }
 });
 
