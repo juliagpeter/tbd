@@ -536,16 +536,16 @@ app.get('/bancos-desempenho', async (req, res) => {
         docs.forEach(d => {
             const banco = d.Termo.toLowerCase();
             const ano = d.Mensuracao.toString().match(/(\d{4})/)?.[1];
-            
+
             if (ano) {
                 if (!dadosPorBanco[banco]) {
                     dadosPorBanco[banco] = {};
                 }
-                
+
                 if (!dadosPorBanco[banco][ano]) {
                     dadosPorBanco[banco][ano] = [];
                 }
-                
+
                 dadosPorBanco[banco][ano].push(parseFloat(d.Participacao) || 0);
             }
         });
@@ -562,7 +562,7 @@ app.get('/bancos-desempenho', async (req, res) => {
 
         // Preparar dados para o gráfico
         const anos = [...new Set(docs.map(d => d.Mensuracao.toString().match(/(\d{4})/)?.[1]).filter(Boolean))].sort();
-        
+
         const chartData = {
             labels: anos,
             datasets: bancosDesempenho.map((banco, index) => {
@@ -582,11 +582,11 @@ app.get('/bancos-desempenho', async (req, res) => {
             const dadosBanco = mediasPorBanco[banco] || {};
             const mediasAnuais = anos.map(ano => dadosBanco[ano] || 0);
             const mediaGeral = mediasAnuais.reduce((sum, val) => sum + val, 0) / mediasAnuais.length;
-            
-            const colunasBanco = anos.map(ano => 
+
+            const colunasBanco = anos.map(ano =>
                 `<td class="participation">${(dadosBanco[ano] || 0).toFixed(2)}%</td>`
             ).join('');
-            
+
             return `
                 <tr>
                     <td><span class="tech-badge tech-${banco}">${banco.toUpperCase()}</span></td>

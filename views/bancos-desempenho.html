@@ -47,11 +47,11 @@
     </div>
 
     <script>
-      const bancosChartData = JSON.parse('{{{ chartData }}}');
-      
-      const ctx = document.getElementById('bancosChart').getContext('2d');
+      const bancosChartData = JSON.parse("{{{ chartData }}}");
+
+      const ctx = document.getElementById("bancosChart").getContext("2d");
       new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: bancosChartData,
         options: {
           responsive: true,
@@ -59,37 +59,37 @@
           plugins: {
             title: {
               display: true,
-              text: 'Evolução do Desempenho dos Bancos de Dados',
+              text: "Evolução do Desempenho dos Bancos de Dados",
               font: {
-                size: 16
-              }
+                size: 16,
+              },
             },
             legend: {
-              position: 'top',
-            }
+              position: "top",
+            },
           },
           scales: {
             x: {
               display: true,
               title: {
                 display: true,
-                text: 'Ano'
-              }
+                text: "Ano",
+              },
             },
             y: {
               display: true,
               title: {
                 display: true,
-                text: 'Participação (%)'
+                text: "Participação (%)",
               },
-              beginAtZero: true
-            }
+              beginAtZero: true,
+            },
           },
           interaction: {
             intersect: false,
-            mode: 'index'
-          }
-        }
+            mode: "index",
+          },
+        },
       });
     </script>
   </body>
